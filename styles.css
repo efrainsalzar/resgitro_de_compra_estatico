@@ -1,0 +1,124 @@
+/* ====== General ====== */
+body {
+  background-color: #f5f5f5;
+  color: #333;
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+h2 {
+  text-align: center;
+  color: #2c3e50;
+}
+
+/* ====== Formulario ====== */
+fieldset {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #fafafa;
+}
+
+legend {
+  font-weight: bold;
+  color: #34495e;
+}
+
+input {
+  display: block;
+  margin: 5px 0;
+  padding: 8px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+
+#btn-agregar-proveedor {
+  background-color: #3498db;
+  color: #fff;
+}
+
+#btn-agregar-producto {
+  background-color: #27ae60;
+  color: #fff;
+}
+
+#btn-imprimir {
+  background-color: #7f8c8d;
+  color: #fff;
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+}
+
+/* ====== Vista para imprimir ====== */
+#print-area, .print-area {
+  font-family: Arial, sans-serif;
+  color: #333;
+  line-height: 1.4;
+  font-size: 14px;
+}
+
+#print-area table, .print-area table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+.print-area th, .print-area td {
+  border: 1px solid #555;
+  padding: 8px;
+  text-align: left;
+}
+
+.print-area th {
+  background-color: #ecf0f1;
+}
+
+.print-area tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* ====== Imprimir ====== */
+@media print {
+  body {
+    background-color: #fff;
+    color: #000;
+  }
+  .container * {
+    visibility: hidden;
+  }
+  .print-area {
+    visibility: visible;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+}
