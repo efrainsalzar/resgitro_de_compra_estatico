@@ -30,13 +30,31 @@ function actualizarProveedores() {
 
 function actualizarProductos() {
   listaProductos.innerHTML = "";
-  productos.forEach(p => {
+  productos.forEach((p, index) => {
     const li = document.createElement("li");
-    li.textContent = `${p.nombre} - ${p.cantidad} x ${p.precio} Bs = ${p.cantidad * p.precio} Bs`;
+    li.textContent = `${p.nombre} - ${p.cantidad} x ${p.precio} Bs = ${p.cantidad * p.precio} Bs `;
+
+    // Crear botón de borrar
+    const btnEliminar = document.createElement("button");
+    btnEliminar.textContent = "x";
+    btnEliminar.style.marginLeft = "10px";
+    btnEliminar.style.color = "white";
+    btnEliminar.style.backgroundColor = "red";
+    btnEliminar.style.border = "none";
+    btnEliminar.style.borderRadius = "4px";
+    btnEliminar.style.cursor = "pointer";
+
+    btnEliminar.addEventListener("click", () => {
+      productos.splice(index, 1); // elimina solo el producto en esa posición
+      actualizarProductos();      // vuelve a renderizar la lista
+    });
+
+    li.appendChild(btnEliminar);
     listaProductos.appendChild(li);
   });
   actualizarVista();
 }
+
 
 function calcularTotal() {
   return productos.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
@@ -120,11 +138,23 @@ btnAgregarProducto.addEventListener("click", () => {
   actualizarProductos();
 });
 
+btnImprimir.textContent = "Descargar PDF";
+
 btnImprimir.addEventListener("click", () => {
-  const printWindow = window.open("", "", "width=800,height=600");
-  printWindow.document.write(`<html><head><title>Registro de Compras</title>`);
-  printWindow.document.write('<style>body{font-family:Arial,sans-serif;}table{width:100%;border-collapse:collapse;margin-bottom:20px;}th,td{border:1px solid #555;padding:8px;text-align:left;}th{background-color:#ecf0f1;}tr:nth-child(even){background-color:#f9f9f9;}</style>');
-  printWindow.document.write(`</head><body>${vistaImpresion.innerHTML}</body></html>`);
-  printWindow.document.close();
-  printWindow.print();
+  const { jsPDF } = window.jspdf;
+
+  html2canvas(vistaImpresion, { scale: 2 }).then(canvas => {
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+
+    const imgWidth = 190; // ancho dentro de la hoja (A4 ~210mm)
+    const pageHeight = 295;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    let position = 10;
+    pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
+
+    pdf.save(`Registro_Compras_${Date.now()}.pdf`);
+  });
 });
+
