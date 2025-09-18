@@ -186,7 +186,7 @@ btnImprimir.addEventListener("click", () => {
 
   html2canvas(vistaImpresion, { scale: 2 }).then((canvas) => {
     const imgData = canvas.toDataURL("image/png");
-    const pdf = new jsPDF("p", "mm", "a4");
+    const pdf = new jsPDF("p", "mm", "letter");
 
     const imgWidth = 190;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
