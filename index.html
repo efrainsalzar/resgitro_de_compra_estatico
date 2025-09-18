@@ -5,25 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro de Compras</title>
   <link rel="stylesheet" href="styles.css">
-  <!-- Agrega estas librerías antes de tu script.js -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
-
+  <!-- Librerías necesarias -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
   <div class="container">
     <h2>COMPRAS</h2>
 
+    <!-- Mensajes de error -->
+    <div id="mensaje-error" class="mensaje-error"></div>
+
     <form id="form-compras">
       <!-- Proveedor -->
       <fieldset>
         <legend>Proveedor</legend>
-        <label >Nombre</label>
+        <label>Nombre</label>
         <input type="text" id="prov-nombre" placeholder="ej: Pescadito del Mar">
-        <label >Contacto</label>
+        <label>Contacto</label>
         <input type="text" id="prov-contacto" placeholder="ej: 784-59851">
-        <label >Mas detalles (opcional)</label>
+        <label>Mas detalles (opcional)</label>
         <input type="text" id="prov-direccion" placeholder="ej: vive en la calle oceano ">
         <button type="button" id="btn-agregar-proveedor">Guardar Proveedor</button>
         <ul id="lista-proveedores"></ul>
@@ -32,13 +34,13 @@
       <!-- Productos -->
       <fieldset>
         <legend>Productos</legend>
-        <label >Nombre</label>
+        <label>Nombre</label>
         <input type="text" id="prod-nombre" placeholder="ej: Arroz">
-        <label >Descripción / Marca</label>
+        <label>Descripción / Marca</label>
         <input type="text" id="prod-descripcion" placeholder="ej: arroz fino. marca 'el Pescadito'">
-        <label >Precio x Unidad (Bs)</label>
-        <input type="number" id="prod-precio" placeholder='ej: 156'>
-        <label >Cantidad</label>
+        <label>Precio x Unidad (Bs)</label>
+        <input type="number" id="prod-precio" placeholder="ej: 156">
+        <label>Cantidad</label>
         <input type="number" id="prod-cantidad" placeholder="ej: 20">
         <button type="button" id="btn-agregar-producto">Agregar Producto</button>
         <ul id="lista-productos"></ul>
@@ -54,7 +56,7 @@
     <h2>Vista archivo</h2>
     <div id="vista-impresion" class="print-area"></div>
 
-    <button id="btn-imprimir">Imprimir Registro</button>
+    <button id="btn-imprimir">Descargar PDF</button>
   </div>
   
   <script src="script.js"></script>

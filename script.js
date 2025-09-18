@@ -18,9 +18,27 @@ const totalElem = document.getElementById("total");
 const vistaImpresion = document.getElementById("vista-impresion");
 const btnImprimir = document.getElementById("btn-imprimir");
 
+/* ===== Función de mensajes de error ===== */
+function mostrarMensajeError(boton, mensaje) {
+  let errorElem = boton.nextElementSibling;
+  if (!errorElem || !errorElem.classList.contains("mensaje-error")) {
+    errorElem = document.createElement("div");
+    errorElem.className = "mensaje-error";
+    boton.insertAdjacentElement("afterend", errorElem);
+  }
+  errorElem.textContent = mensaje;
+  errorElem.style.display = "block";
+
+  // Ocultar después de 3 segundos
+  setTimeout(() => {
+    errorElem.style.display = "none";
+  }, 3000);
+}
+
+/* ===== Proveedores ===== */
 function actualizarProveedores() {
   listaProveedores.innerHTML = "";
-  proveedores.forEach(p => {
+  proveedores.forEach((p) => {
     const li = document.createElement("li");
     li.textContent = `${p.nombre} - ${p.contacto} - ${p.direccion}`;
     listaProveedores.appendChild(li);
@@ -28,34 +46,45 @@ function actualizarProveedores() {
   actualizarVista();
 }
 
+/* ===== Productos ===== */
 function actualizarProductos() {
   listaProductos.innerHTML = "";
   productos.forEach((p, index) => {
     const li = document.createElement("li");
-    li.textContent = `${p.nombre} - ${p.cantidad} x ${p.precio} Bs = ${p.cantidad * p.precio} Bs `;
+    li.style.display = "flex";
+    li.style.justifyContent = "space-between";
+    li.style.alignItems = "center";
+    li.style.padding = "6px 10px";
+    li.style.backgroundColor = index % 2 === 0 ? "#aefdf3ff" : "#d4ffbbff";
 
-    // Crear botón de borrar
+    const texto = document.createElement("span");
+    texto.textContent = `${p.nombre} ➡ (${p.cantidad}) x (${p.precio}) = ${
+      p.cantidad * p.precio
+    } Bs`;
+
     const btnEliminar = document.createElement("button");
-    btnEliminar.textContent = "x";
-    btnEliminar.style.marginLeft = "10px";
+    btnEliminar.textContent = "borrar";
     btnEliminar.style.color = "white";
-    btnEliminar.style.backgroundColor = "red";
+    btnEliminar.style.margin = "2px";
+    btnEliminar.style.backgroundColor = "#ff0000";
     btnEliminar.style.border = "none";
-    btnEliminar.style.borderRadius = "4px";
+    btnEliminar.style.borderRadius = "10px";
     btnEliminar.style.cursor = "pointer";
 
     btnEliminar.addEventListener("click", () => {
-      productos.splice(index, 1); // elimina solo el producto en esa posición
-      actualizarProductos();      // vuelve a renderizar la lista
+      productos.splice(index, 1);
+      actualizarProductos();
     });
 
+    li.appendChild(texto);
     li.appendChild(btnEliminar);
+
     listaProductos.appendChild(li);
   });
   actualizarVista();
 }
 
-
+/* ===== Calcular Totales ===== */
 function calcularTotal() {
   return productos.reduce((acc, p) => acc + p.precio * p.cantidad, 0);
 }
@@ -70,23 +99,23 @@ function actualizarVista() {
     <p>Fecha: ${new Date().toLocaleString()}</p>
   </header>`;
 
-  // Proveedores
   if (proveedores.length === 0) {
     html += "<p>No se ha registrado proveedor.</p>";
   } else {
-    html += "<table><thead><tr><th>Nombre</th><th>Contacto</th><th>Dirección</th></tr></thead><tbody>";
-    proveedores.forEach(p => {
+    html +=
+      "<table><thead><tr><th>Nombre del Proveedor</th><th>Contacto</th><th>Dirección</th></tr></thead><tbody>";
+    proveedores.forEach((p) => {
       html += `<tr><td>${p.nombre}</td><td>${p.contacto}</td><td>${p.direccion}</td></tr>`;
     });
     html += "</tbody></table>";
   }
 
-  // Productos
   if (productos.length === 0) {
     html += "<p>No se han registrado productos.</p>";
   } else {
-    html += "<table><thead><tr><th>Producto</th><th>Descripción</th><th>Cantidad</th><th>Precio Unit.</th><th>Subtotal</th></tr></thead><tbody>";
-    productos.forEach(p => {
+    html +=
+      "<table><thead><tr><th>Producto</th><th>Descripción</th><th>Cantidad</th><th>Precio Unit.</th><th>Subtotal</th></tr></thead><tbody>";
+    productos.forEach((p) => {
       html += `<tr>
         <td>${p.nombre}</td>
         <td>${p.descripcion || "Sin descripción"}</td>
@@ -102,59 +131,67 @@ function actualizarVista() {
   vistaImpresion.innerHTML = html;
 }
 
+/* ===== Eventos ===== */
 btnAgregarProveedor.addEventListener("click", () => {
-  if (!provNombre.value) return alert("Ingrese nombre del proveedor");
-  
+  if (!provNombre.value) {
+    return mostrarMensajeError(btnAgregarProveedor, "Ingrese nombre del proveedor");
+  }
+
   proveedores.push({
     nombre: provNombre.value,
     contacto: provContacto.value,
-    direccion: provDireccion.value
+    direccion: provDireccion.value,
   });
 
-  // Limpiar inputs
   provNombre.value = provContacto.value = provDireccion.value = "";
 
-  // Actualizar lista
   actualizarProveedores();
 
-  // --- NUEVO: ocultar formulario y desactivar botón ---
-  document.querySelector("fieldset").style.display = "none"; // Oculta el fieldset de proveedor
-  btnAgregarProveedor.disabled = true; // Desactiva botón
-  btnAgregarProveedor.style.backgroundColor = "#95a5a6"; // Cambia color a gris
+  document.querySelector("fieldset").style.display = "none";
+  btnAgregarProveedor.disabled = true;
+  btnAgregarProveedor.style.backgroundColor = "#95a5a6";
 });
-
 
 btnAgregarProducto.addEventListener("click", () => {
   const precio = parseFloat(prodPrecio.value);
   const cantidad = parseInt(prodCantidad.value);
-  if (!prodNombre.value || !precio || !cantidad) return alert("Ingrese producto y cantidad válida");
+
+  if (!prodNombre.value || !precio || !cantidad) {
+    return mostrarMensajeError(btnAgregarProducto, "Ingrese producto, precio y cantidad válida");
+  }
+
   productos.push({
     nombre: prodNombre.value,
     descripcion: prodDescripcion.value,
     precio,
-    cantidad
+    cantidad,
   });
+
   prodNombre.value = prodDescripcion.value = prodPrecio.value = prodCantidad.value = "";
+
   actualizarProductos();
 });
 
 btnImprimir.textContent = "Descargar PDF";
 
 btnImprimir.addEventListener("click", () => {
+  if (!proveedores.length) {
+    return mostrarMensajeError(btnImprimir, "Debe registrar al menos un proveedor");
+  }
+    if (!productos.length) {
+    return mostrarMensajeError(btnImprimir, "Debe registrar al menos un producto");
+  }
+
   const { jsPDF } = window.jspdf;
 
-  html2canvas(vistaImpresion, { scale: 2 }).then(canvas => {
+  html2canvas(vistaImpresion, { scale: 2 }).then((canvas) => {
     const imgData = canvas.toDataURL("image/png");
     const pdf = new jsPDF("p", "mm", "a4");
 
-    const imgWidth = 190; // ancho dentro de la hoja (A4 ~210mm)
-    const pageHeight = 295;
+    const imgWidth = 190;
     const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-    let position = 10;
-    pdf.addImage(imgData, "PNG", 10, position, imgWidth, imgHeight);
-
+    pdf.addImage(imgData, "PNG", 10, 10, imgWidth, imgHeight);
     pdf.save(`Registro_Compras_${Date.now()}.pdf`);
   });
 });
-
